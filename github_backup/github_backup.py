@@ -75,6 +75,7 @@ def main():
 
     # Make the connection to Github here.
     global gh
+    config = {}
     if args.token != False:
         if args.token == None:
             if os.path.isfile(CONFFILE):
@@ -88,7 +89,6 @@ def main():
         gh = github.Github(auth=auth)
     
     else:
-        config = {}
         if args.password == False:
             # no password option given, continue unauthenticated
             # unauthenticated users can only use http git method
