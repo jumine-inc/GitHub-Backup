@@ -84,7 +84,7 @@ def main():
         else:
             token = args.token
         
-        auth =github.Auth(token)
+        auth = github.Auth.Token(token)
         gh = github.Github(auth=auth)
     
     else:
