@@ -323,6 +323,7 @@ def init_parser():
     parser.add_argument("-s", "--suffix", help="Add suffix to repository directory names", default="")
     parser.add_argument("-u", "--username", help="Backup USER account", metavar="USER")
     parser.add_argument("-p", "--password", help="Authenticate with Github API (give no argument to check ~/.github-backup.conf or prompt for a password)", nargs="?", default=False)
+    parser.add_argument("-T", "--token", help="Authenticate with Github API (give no argument to check ~/.github-backup.conf)", nargs="?", default=False)
     parser.add_argument("-P", "--prefix", help="Add prefix to repository directory names", default="")
     parser.add_argument("-o", "--organization", help="Backup Organizational repositories", metavar="ORG")
     parser.add_argument("-A", "--account", help="Backup account data", action='store_true')
