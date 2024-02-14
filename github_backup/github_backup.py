@@ -74,32 +74,46 @@ def main():
     args.backupdir = args.backupdir.rstrip("/")
 
     # Make the connection to Github here.
-    config = {}
-    if args.password == False:
-        # no password option given, continue unauthenticated
-        # unauthenticated users can only use http git method
-        args.type = 'http'
-    elif args.password == None:
-        # password option given, but no password value given
-        config = {'login_or_token': args.login_or_token}
-        if os.path.isfile(CONFFILE):
-            cfg = ConfigParser()
-            cfg.read(CONFFILE)
-            try:
-                config['password'] = cfg.get('github-backup', 'APITOKEN')
-            except:
-                config['password'] = cfg.get('github-backup', 'PASSWORD')
-        else:
-            password = getpass.getpass('Enter password for {}: '.format(config['login_or_token']))
-            if password:
-                config['password'] = password
-    else:
-        config = {'login_or_token': args.login_or_token}
-        config['password'] = args.password
-
-    LOGGER.debug("Github config: %r", config)
     global gh
-    gh = github.Github(**config)
+    if args.token != False:
+        if args.token == None:
+            if os.path.isfile(CONFFILE):
+                cfg = ConfigParser()
+                cfg.read(CONFFILE)
+                token = cfg.get('github-backup', 'TOKEN')
+        else:
+            token = args.token
+        
+        auth =github.Auth(token)
+        gh = github.Github(auth=auth)
+    
+    else:
+        config = {}
+        if args.password == False:
+            # no password option given, continue unauthenticated
+            # unauthenticated users can only use http git method
+            args.type = 'http'
+        elif args.password == None:
+            # password option given, but no password value given
+            config = {'login_or_token': args.login_or_token}
+            if os.path.isfile(CONFFILE):
+                cfg = ConfigParser()
+                cfg.read(CONFFILE)
+                try:
+                    config['password'] = cfg.get('github-backup', 'APITOKEN')
+                except:
+                    config['password'] = cfg.get('github-backup', 'PASSWORD')
+            else:
+                password = getpass.getpass('Enter password for {}: '.format(config['login_or_token']))
+                if password:
+                    config['password'] = password
+        else:
+            config = {'login_or_token': args.login_or_token}
+            config['password'] = args.password
+
+        LOGGER.debug("Github config: %r", config)
+        
+        gh = github.Github(**config)
 
     # Check that backup dir exists
     if not os.path.exists(args.backupdir):
